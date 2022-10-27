@@ -1,5 +1,6 @@
 const displayRpsGame = document.getElementById('display-rps')
 const displayMemoryGame = document.getElementById('display-memorygame')
+const displayWhacAMoleGame = document.getElementById('display-whacamole')
 
 const computerChoiceDisplay = document.getElementById('computer-choice')
 const userChoiceDisplay = document.getElementById('user-choice')
@@ -27,6 +28,16 @@ displayMemoryGame.addEventListener('click', () => {
     }
     else{
         memoryGame[0].style.display = "none"
+    }
+});
+
+displayWhacAMoleGame.addEventListener('click', () => {
+    let whacAMoleGame = document.getElementsByClassName("whac-a-mole-game")
+    if (whacAMoleGame[0].style.display == "none"){
+        whacAMoleGame[0].style.display = "block"
+    }
+    else{
+        whacAMoleGame[0].style.display = "none"
     }
 });
 
@@ -212,5 +223,58 @@ function checkMatch() {
     if(cardsWon.length == cardArray.length/2) {
         memoryResultDisplay.innerHTML = "Congratulations, you found them all!"
     }
+}
+
+const squares = document.querySelectorAll('.square');
+const mole = document.querySelector('.mole');
+const timeLeft = document.querySelector('#time-left');
+const score = document.querySelector('#score');
+
+let whacamoleResult = 0;
+let hitPosition = 0;
+let currentTime = 10;
+let timerId = null;
+
+
+function randomSquare() {
+    squares.forEach(square => {
+        square.classList.remove('mole');
+    });
+
+    let randomSquare = squares[Math.floor(Math.random() * 9)] // math floor rounds the random number down
+    randomSquare.classList.add('mole');
+    hitPosition = randomSquare.id;
 
 }
+
+squares.forEach(square => {
+    square.addEventListener('click', () => {
+        if(square.id == hitPosition) {
+            whacamoleResult++;
+            score.textContent = whacamoleResult;
+            hitPosition = null;
+        }
+    });
+})
+
+function moveMole() {
+    timerId = setInterval(randomSquare, 1000);
+}
+
+moveMole(); // todo: attach it to a button
+
+
+function countDown() {
+    currentTime--;
+    timeLeft.textContent = currentTime;
+
+    if(currentTime == 0){
+        clearInterval(countDownTimerId);
+        clearInterval(timerId);
+        alert("Game over! Your final score is: " + whacamoleResult)
+    }
+
+
+}
+
+let countDownTimerId = setInterval(countDown,1000)

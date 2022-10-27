@@ -6,9 +6,30 @@
     display: none;
 }
 
+.whac-a-mole-game {
+    display: none;
+}
+
 .grid {
     width: 400px;
     height: 300px;
     display: flex;
     flex-wrap: wrap;
+}
+
+.whacamole-grid {
+    width: 606px;
+    height: 606px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.square {
+    height: 200px;
+    width: 200px;
+    border: solid black 1px;
+}
+
+.mole {
+    background-color: blue;
 }
