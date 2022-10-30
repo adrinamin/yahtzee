@@ -1,15 +1,19 @@
 import "reflect-metadata"
 import { container } from "tsyringe"
 import { WhacAMoleGame } from "./WhacAMole/whacAMole";
+import { RockPaperScissorGame } from "./RockPaperScissor/rockPaperScissor"
+import { MemoryGame } from "./MemoryGame/memoryGame"
 
-container.register("IWhacAMoleGame", {
-    useClass: WhacAMoleGame
-  });
+let whacAMoleGame : any;
+
+container.register("IWhacAMoleGame", { useClass: WhacAMoleGame });
 
 function main() : void {
-    const whacAMoleGame = container.resolve(WhacAMoleGame)
+    whacAMoleGame = container.resolve(WhacAMoleGame)
     whacAMoleGame.displayWhacAMoleGame();
-    whacAMoleGame.start();
+
+    container.resolve(RockPaperScissorGame).displayRockPaperScissorGame();
+    container.resolve(MemoryGame).displayMemoryGame();
 }
 
 main();

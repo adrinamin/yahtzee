@@ -6,7 +6,6 @@ export interface IWhacAMoleGame {
 export class WhacAMoleGame implements IWhacAMoleGame {
     
     private squares : NodeListOf<Element> = document.querySelectorAll('.square');
-    // const mole = document.querySelector('.mole');
     private readonly timeLeft : Element | null = document.querySelector('#time-left');
     private readonly score : Element | null = document.querySelector('#score');
     private whacamoleResult : number = 0;
@@ -16,6 +15,9 @@ export class WhacAMoleGame implements IWhacAMoleGame {
     private countDownTimerId : number = 0;
 
     constructor() {
+
+        document.querySelector('#startWhacAMoleGame')?.addEventListener('click', (event: Event) => {this.start()});
+
         this.squares.forEach(square => {
             square.addEventListener('click', () => {
                 if(this.hitPosition != null && square.id == this.hitPosition.toString()) {
@@ -34,11 +36,11 @@ export class WhacAMoleGame implements IWhacAMoleGame {
         hideOrDisplay?.addEventListener('click', () => {
             let whacAMoleGame = document.getElementsByClassName("whac-a-mole-game")
             
-            if ((whacAMoleGame[0]as HTMLElement).style.display == "none"){
-                (whacAMoleGame[0]as HTMLElement).style.display = "block"
+            if ((whacAMoleGame[0] as HTMLElement).style.display == "none"){
+                (whacAMoleGame[0] as HTMLElement).style.display = "block"
             }
             else{
-                (whacAMoleGame[0]as HTMLElement).style.display = "none"
+                (whacAMoleGame[0] as HTMLElement).style.display = "none"
             }
         });
     }
