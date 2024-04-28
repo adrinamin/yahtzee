@@ -1,23 +1,91 @@
-<script>
-    const buttonName = 'Click me';
-    let dice1 = 0;
-    let dice2 = 0;
-    let dice3 = 0;
-    let dice4 = 0;
-    let dice5 = 0;
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import Modal from '$lib/components/modal.svelte';
+	import Dice from '$lib/components/dice.svelte';
+    import type { Player } from './+page' 
 
-    function rollDice() {
-        dice1 = Math.floor(Math.random() * 6) + 1;
-        dice2 = Math.floor(Math.random() * 6) + 1;
-        dice3 = Math.floor(Math.random() * 6) + 1;
-        dice4 = Math.floor(Math.random() * 6) + 1;
-        dice5 = Math.floor(Math.random() * 6) + 1;
+    const pageName : string = 'Home';
+    let showModal : boolean = false;
+
+    const numberOfPlayers : number[] = [1, 2, 3, 4, 5, 6];
+    let selectedPlayers : number;
+
+    let players : Player[];
+    let currentPlayer : Player;
+    let playerNames : string[];
+    let ArePlayersVisible: boolean = false;
+
+    onMount(() => {
+        console.log('The page has loaded');
+        resetModalValues();
+    });
+
+    function resetModalValues() : void {
+        playerNames = ['', '', '', '', '', ''];
+        selectedPlayers = 0;
     }
+
+    function openModal() : void {
+        console.log('Opening modal');
+        showModal = true;
+    }
+
+    function handleUserSelection() : void {
+        console.log('$selectedPlayers players selected');
+        players = Array.from({ length: selectedPlayers }, (_, i) => ({ name: playerNames[i], score: 0 }));
+        console.log(players);
+        resetModalValues();
+        currentPlayer = players[0];
+        ArePlayersVisible = true;
+    }
+
+    function nextPlayer() : void {
+        alert('Next player');
+        const currentPlayerIndex = players.indexOf(currentPlayer);
+        currentPlayer = players[currentPlayerIndex + 1] || players[0];
+    }
+
 </script>
 
-<button on:click={rollDice}>{buttonName}</button>
-<p>Dice 1: {dice1}</p>
-<p>Dice 2: {dice2}</p>
-<p>Dice 3: {dice3}</p>
-<p>Dice 4: {dice4}</p>
-<p>Dice 5: {dice5}</p>
+<h1>{pageName}</h1>
+
+<button on:click={openModal}>Let's go</button>
+
+<Modal bind:showModal on:close={resetModalValues}>
+    <h2 slot="header">Welcome to the modal</h2>
+    <p>How many players do you have?</p>
+    <form on:submit|preventDefault={handleUserSelection}>
+        <select bind:value={selectedPlayers}>
+            {#each numberOfPlayers as player}
+                <option value={player}>{player}</option>
+            {/each}
+        </select>
+        {#if selectedPlayers > 0}
+            <p>You have selected {selectedPlayers} players</p>
+            {#each Array(selectedPlayers) as _, i}
+            <div>
+                <label for="player{i}">Player {i + 1}</label>
+                <input bind:value={playerNames[i]} type="text" placeholder="Player name" />
+            </div>
+            {/each}
+        {/if}
+        <button disabled={selectedPlayers === 0} type="submit">Start</button>
+    </form>
+
+</Modal>
+
+{#if ArePlayersVisible}
+    <h2>Players</h2>
+    <ul>
+        {#each players as player}
+            <li>{player.name} - {player.score}</li>
+        {/each}
+    </ul>
+    <h2>Current player</h2>
+    <p>{currentPlayer.name}</p>
+    <hr />
+    <Dice on:nextPlayer={nextPlayer} />
+{/if}
+
+
+
