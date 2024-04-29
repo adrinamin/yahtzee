@@ -14,6 +14,8 @@
     let currentPlayer : Player;
     let playerNames : string[];
     let ArePlayersVisible: boolean = false;
+    let playerScore: number = 0;
+    let ones: number = 0;
 
     onMount(() => {
         console.log('The page has loaded');
@@ -39,10 +41,10 @@
         ArePlayersVisible = true;
     }
 
-    function nextPlayer() : void {
-        alert('Next player');
+    function nextPlayer(event: CustomEvent) : void {
         const currentPlayerIndex = players.indexOf(currentPlayer);
         currentPlayer = players[currentPlayerIndex + 1] || players[0];
+        alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
     }
 
 </script>
@@ -85,6 +87,14 @@
     <p>{currentPlayer.name}</p>
     <hr />
     <Dice on:nextPlayer={nextPlayer} />
+
+    <hr />
+
+    <label>
+        number of ones:
+        <input type="text" bind:value={ones} />
+    </label>
+    
 {/if}
 
 
