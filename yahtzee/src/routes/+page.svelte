@@ -15,8 +15,6 @@
 	let currentPlayer: Player;
 	let playerNames: string[];
 	let ArePlayersVisible: boolean = false;
-	let playerScore: number = 0;
-	let ones: number = 0;
 
 	onMount(() => {
 		console.log('The page has loaded');
@@ -50,6 +48,13 @@
 		currentPlayer = players[currentPlayerIndex + 1] || players[0];
 		alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
 	}
+
+	function handleFinalScore(event: CustomEvent): void {
+		const playerIndex = players.findIndex(player => player.name === event.detail.player);
+		players[playerIndex].score += event.detail.finalScore;
+		alert(`${event.detail.player} scored ${event.detail.finalScore} points!`);
+	}
+
 </script>
 
 <h1>{pageName}</h1>
@@ -95,7 +100,7 @@
 	<div class="scorecard">
 		{#each players as player}
 			<div>
-				<Scorecard bind:player={player.name} />
+				<Scorecard bind:player={player.name} on:finalScore={handleFinalScore} />
 			</div>
 		{/each}
 	</div>
