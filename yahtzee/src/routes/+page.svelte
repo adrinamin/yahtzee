@@ -5,20 +5,38 @@
 	import Scorecard from '$lib/components/scorecard.svelte';
 	import type { Player } from './+page';
 
-	let showModal: boolean = false;
-
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
+	
+	let showModal: boolean;
 	let selectedPlayers: number;
-
 	let players: Player[];
 	let currentPlayer: Player;
 	let playerNames: string[] = [];
-	let arePlayersVisible: boolean = false;
+	let arePlayersVisible: boolean;
+	let isFormValid = false;
 
 	onMount(() => {
 		console.log('The page has loaded');
 		resetModalValues();
+		showModal = false;
+		arePlayersVisible = false;
 	});
+
+	function handleSubmit(): void {
+		players = Array.from({ length: selectedPlayers }, (_, i) => ({
+			name: playerNames[i],
+			score: 0
+		}));
+		console.log('Players created: ', players);
+		showModal = false;
+		resetModalValues();
+		currentPlayer = players[0];
+		arePlayersVisible = true;
+	}
+
+	function handleModalClose(): void {
+		resetModalValues();
+	}
 
 	function resetModalValues(): void {
 		playerNames = [];
@@ -27,17 +45,6 @@
 
 	function openModal(): void {
 		showModal = true;
-	}
-
-	function handleUserSelection(): void {
-		players = Array.from({ length: selectedPlayers }, (_, i) => ({
-			name: playerNames[i],
-			score: 0
-		}));
-		console.log(players);
-		resetModalValues();
-		currentPlayer = players[0];
-		arePlayersVisible = true;
 	}
 
 	function nextPlayer(event: CustomEvent): void {
@@ -52,8 +59,6 @@
 		players[playerIndex].score = finalScore;
 		alert(`${event.detail.player} scored ${finalScore} points!`);
 	}
-
-	let isFormValid = false;
 
 	$: {
 		if (selectedPlayers > 0 && playerNames.length < selectedPlayers) {
@@ -71,10 +76,10 @@
 
 <button on:click={openModal}>Let's go</button>
 
-<Modal bind:showModal on:close={resetModalValues}>
-	<h2 slot="header">Welcome to the modal</h2>
+<Modal bind:showModal on:close={handleModalClose}>
+	<h2 slot="header">Choose player</h2>
 	<p>How many players do you have?</p>
-	<form on:submit|preventDefault={handleUserSelection}>
+	<form on:submit|preventDefault={handleSubmit}>
 		<select bind:value={selectedPlayers}>
 			{#each numberOfPlayers as player}
 				<option value={player}>{player}</option>
