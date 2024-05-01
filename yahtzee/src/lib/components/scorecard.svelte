@@ -34,7 +34,13 @@
                 // parseInt() is another option, but then I have to convert the property value to a string first.
                 finalScore += +properties[property];
             }
+
         }
+
+        if (Object.values(properties).slice(0, 6).reduce((acc, value) => acc + value, 0) >= 63) {
+            finalScore += 35;
+        }
+
         console.log('final score: ', finalScore);
         dispatch('finalScore', { finalScore: finalScore, player: player});
     }
