@@ -5,22 +5,36 @@
 
     export let player : string = '';
 
-    let ones : number = 0;
-    let twos : number = 0;
-    let threes : number = 0;
-    let fours : number = 0;
-    let fives : number = 0;
-    let sixs : number = 0;
-    let threeOfAKind : number = 0;
-    let fourOfAKind : number = 0;
-    let fullHouse : number = 0;
-    let smallStraight : number = 0;
-    let largeStraight : number = 0;
-    let yahtzee : number = 0;
-    let chance : number = 0;
+    let properties: {[key: string]: number} = {
+        ones: 0,
+        twos: 0,
+        threes: 0,
+        fours: 0,
+        fives: 0,
+        sixs: 0,
+        threeOfAKind: 0,
+        fourOfAKind: 0,
+        fullHouse: 0,
+        smallStraight: 0,
+        largeStraight: 0,
+        yahtzee: 0,
+        chance: 0
+    }
 
     function calculateFinalScore() {
-        let finalScore = ones + twos + threes + fours + fives + sixs + threeOfAKind + fourOfAKind + fullHouse + smallStraight + largeStraight + yahtzee + chance;
+        let finalScore = 0;
+        for (const property in properties) {
+            if (properties[property] !== 0 
+                && properties[property] !== undefined 
+                && properties[property] !== null) {
+                // Convert the property value to a number before adding it to the final score.
+                // The issue you're encountering is likely due to TypeScript treating the property values as strings instead of numbers.
+                // The unary plus operator (+) will convert the string to a number.
+                // parseInt() is another option, but then I have to convert the property value to a string first.
+                finalScore += +properties[property];
+            }
+        }
+        console.log('final score: ', finalScore);
         dispatch('finalScore', { finalScore: finalScore, player: player});
     }
 
@@ -30,67 +44,67 @@
 
 <label>
     score of ones:
-    <input type="text" bind:value={ones} />
+    <input type="text" bind:value={properties.ones} />
 </label>
 <br />
 <label>
     score of twos:
-    <input type="text" bind:value={twos}/>
+    <input type="text" bind:value={properties.twos}/>
 </label>
 <br />
 <label>
     score of threes:
-    <input type="text" bind:value={threes} />
+    <input type="text" bind:value={properties.threes} />
 </label>
 <br />
 <label>
     score of fours:
-    <input type="text" bind:value={fours}/>
+    <input type="text" bind:value={properties.fours}/>
 </label>
 <br />
 <label>
     score of fives:
-    <input type="text" bind:value={fives}/>
+    <input type="text" bind:value={properties.fives}/>
 </label>
 <br />
 <label>
     score of sixs:
-    <input type="text" bind:value={sixs}/>
+    <input type="text" bind:value={properties.sixs}/>
 </label>
 <br />
 <label>
     three of a kind:
-    <input type="text" bind:value={threeOfAKind}/>
+    <input type="text" bind:value={properties.threeOfAKind}/>
 </label>
 <br />
 <label>
     four of a kind:
-    <input type="text" bind:value={fourOfAKind}/>
+    <input type="text" bind:value={properties.fourOfAKind}/>
 </label>
 <br />
 <label>
     full house:
-    <input type="text" bind:value={fullHouse}/>
+    <input type="text" bind:value={properties.fullHouse}/>
 </label>
 <br />
 <label>
     small straight:
-    <input type="text" bind:value={smallStraight}/>
+    <input type="text" bind:value={properties.smallStraight}/>
 </label>
 <br />
 <label>
     large straight:
-    <input type="text" bind:value={largeStraight}/>
+    <input type="text" bind:value={properties.largeStraight}/>
 </label>
 <br />
 <label>
     yahtzee:
-    <input type="text" bind:value={yahtzee}/>
+    <input type="text" bind:value={properties.yahtzee}/>
 </label>
 <br />
 <label>
     chance:
-    <input type="text" bind:value={chance}/>
+    <input type="text" bind:value={properties.chance}/>
 </label>
 <br />
 <button on:click={calculateFinalScore}>Calculate final score</button>

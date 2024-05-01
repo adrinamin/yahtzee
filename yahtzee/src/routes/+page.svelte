@@ -5,7 +5,6 @@
 	import Scorecard from '$lib/components/scorecard.svelte';
 	import type { Player } from './+page';
 
-	const pageName: string = 'Home';
 	let showModal: boolean = false;
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
@@ -13,8 +12,8 @@
 
 	let players: Player[];
 	let currentPlayer: Player;
-	let playerNames: string[];
-	let ArePlayersVisible: boolean = false;
+	let playerNames: string[] = [];
+	let arePlayersVisible: boolean = false;
 
 	onMount(() => {
 		console.log('The page has loaded');
@@ -22,17 +21,15 @@
 	});
 
 	function resetModalValues(): void {
-		playerNames = ['', '', '', '', '', ''];
+		playerNames = [];
 		selectedPlayers = 0;
 	}
 
 	function openModal(): void {
-		console.log('Opening modal');
 		showModal = true;
 	}
 
 	function handleUserSelection(): void {
-		console.log('$selectedPlayers players selected');
 		players = Array.from({ length: selectedPlayers }, (_, i) => ({
 			name: playerNames[i],
 			score: 0
@@ -40,7 +37,7 @@
 		console.log(players);
 		resetModalValues();
 		currentPlayer = players[0];
-		ArePlayersVisible = true;
+		arePlayersVisible = true;
 	}
 
 	function nextPlayer(event: CustomEvent): void {
@@ -50,14 +47,27 @@
 	}
 
 	function handleFinalScore(event: CustomEvent): void {
-		const playerIndex = players.findIndex(player => player.name === event.detail.player);
-		players[playerIndex].score += event.detail.finalScore;
-		alert(`${event.detail.player} scored ${event.detail.finalScore} points!`);
+		const playerIndex = players.findIndex((player) => player.name === event.detail.player);
+		const finalScore = event.detail.finalScore as number;
+		players[playerIndex].score = finalScore;
+		alert(`${event.detail.player} scored ${finalScore} points!`);
 	}
 
-</script>
+	let isFormValid = false;
 
-<h1>{pageName}</h1>
+	$: {
+		if (selectedPlayers > 0 && playerNames.length < selectedPlayers) {
+			playerNames.push('');
+			isFormValid = false;
+		}
+		else if (playerNames.length > selectedPlayers) {
+			playerNames.pop();
+		}
+		isFormValid = playerNames.every((name) => name.trim() !== '');
+		// console.log(isFormValid);
+		// console.log(playerNames);
+	}
+</script>
 
 <button on:click={openModal}>Let's go</button>
 
@@ -78,16 +88,16 @@
 					<input bind:value={playerNames[i]} type="text" placeholder="Player name" />
 				</div>
 			{/each}
+			<button disabled={!isFormValid} type="submit">Start</button>
 		{/if}
-		<button disabled={selectedPlayers === 0} type="submit">Start</button>
 	</form>
 </Modal>
 
-{#if ArePlayersVisible}
+{#if arePlayersVisible}
 	<h2>Players</h2>
 	<ul>
 		{#each players as player}
-			<li>{player.name} - {player.score}</li>
+			<li>{player.name}: {player.score} {player.score > 0 ? 'points' : ''}</li>
 		{/each}
 	</ul>
 	<h2>Current player</h2>
@@ -110,6 +120,6 @@
 	.scorecard {
 		display: flex;
 		flex-flow: row wrap;
-        justify-content: space-around;
+		justify-content: space-around;
 	}
 </style>
