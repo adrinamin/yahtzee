@@ -4,6 +4,7 @@
     const dispatch = createEventDispatcher();
 
     export let player : string = '';
+    let arePropsValid: boolean = false;
 
     let properties: {[key: string]: number} = {
         ones: 0,
@@ -36,6 +37,10 @@
         }
         console.log('final score: ', finalScore);
         dispatch('finalScore', { finalScore: finalScore, player: player});
+    }
+
+    $: {
+        arePropsValid = Object.values(properties).every((value) => value > 0);
     }
 
 </script>
@@ -107,4 +112,4 @@
     <input type="text" bind:value={properties.chance}/>
 </label>
 <br />
-<button on:click={calculateFinalScore}>Calculate final score</button>
+<button disabled={!arePropsValid} on:click={calculateFinalScore}>Calculate final score</button>
