@@ -106,7 +106,7 @@
 		{/each}
 	</ul>
 	<h2>Current player</h2>
-	<p>{currentPlayer.name}</p>
+	<h3>{currentPlayer.name}</h3>
 	<hr />
 	<Dice on:nextPlayer={nextPlayer} />
 
