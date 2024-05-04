@@ -127,10 +127,12 @@
 	</ul>
 	<h2>Current player</h2>
 	<h3>{currentPlayer.name}</h3>
-	<hr />
+
+	<div class="divider"></div> <!-- This is a custom divider component -->
+
 	<Dice on:nextPlayer={nextPlayer} />
 
-	<hr />
+	<div class="divider"></div> 
 
 	<div class="scorecard">
 		{#each players as player}
