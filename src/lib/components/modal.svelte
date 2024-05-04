@@ -30,14 +30,17 @@
 	bind:this={dialog}
 	on:close={close}
 	on:click|self={close}
+	class="modal modal-bottom sm:modal-middle"
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation>
-		<slot name="header" />
-		<!-- <hr /> -->
+	<div class="modal-box" on:click|stopPropagation>
+		<div class="py-2">
+			<slot name="header" />
+		</div>
+			<!-- <hr /> -->
 		<slot />
 		<!-- <hr /> -->
 		<!-- svelte-ignore a11y-autofocus -->
-		<button autofocus on:click={close}>Cancel</button>
+		<button autofocus class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={close}>x</button>
 	</div>
 </dialog>

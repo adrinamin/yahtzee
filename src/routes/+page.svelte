@@ -6,7 +6,7 @@
 	import type { Player } from './+page';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
-	
+
 	let showModal: boolean;
 	let selectedPlayers: number;
 	let players: Player[];
@@ -64,8 +64,7 @@
 		if (selectedPlayers > 0 && playerNames.length < selectedPlayers) {
 			playerNames.push('');
 			isFormValid = false;
-		}
-		else if (playerNames.length > selectedPlayers) {
+		} else if (playerNames.length > selectedPlayers) {
 			playerNames.pop();
 		}
 		isFormValid = playerNames.every((name) => name.trim() !== '');
@@ -74,31 +73,52 @@
 	}
 </script>
 
-<button class="btn btn-primary" on:click={openModal}>Let's go</button>
-
-<Modal bind:showModal on:close={handleModalClose}>
-	<h2 slot="header">Choose player</h2>
-	<p>How many players do you have?</p>
-	<form on:submit|preventDefault={handleSubmit}>
-		<select bind:value={selectedPlayers}>
-			{#each numberOfPlayers as player}
-				<option value={player}>{player}</option>
-			{/each}
-		</select>
-		{#if selectedPlayers > 0}
-			<p>You have selected {selectedPlayers} players</p>
-			{#each Array(selectedPlayers) as _, i}
-				<div>
-					<label for="player{i}">Player {i + 1}</label>
-					<input bind:value={playerNames[i]} type="text" placeholder="Player name" />
+{#if !arePlayersVisible}
+	<div class="hero min-h-screen">
+		<div class="hero-content text-center">
+			<div class="max-w-md">
+				<h1 class="text-5xl font-bold">Hello there</h1>
+				<p class="py-6">
+					This is a simple dice game (yahtzee). You can play with up to 6 players. Each player will have a
+					scorecard to keep track of their scores.
+				</p>
+				<button class="btn btn-primary rounded-full" on:click={openModal}>New game!</button>
+			</div>
+		</div>
+	</div>
+	<Modal bind:showModal on:close={handleModalClose}>
+		<h2 class="font-bold text-lg" slot="header">Choose player</h2>
+		<div>
+			<p>How many players do you have?</p>
+			<form on:submit|preventDefault={handleSubmit}>
+				<div class="pb-2">
+					<select class="select select-primary select-sm" bind:value={selectedPlayers}>
+						{#each numberOfPlayers as player}
+							<option value={player}>{player}</option>
+						{/each}
+					</select>
 				</div>
-			{/each}
-			<button disabled={!isFormValid} type="submit">Start</button>
-		{/if}
-	</form>
-</Modal>
-
-{#if arePlayersVisible}
+				{#if selectedPlayers > 0}
+					<!-- <p>You have selected {selectedPlayers} players</p> -->
+					{#each Array(selectedPlayers) as _, i}
+						<div class="py-1">
+							<label for="player{i}">Player {i + 1}</label>
+							<input
+								bind:value={playerNames[i]}
+								type="text"
+								placeholder="Player name"
+								class="input input-bordered w-full max-w-md"
+							/>
+						</div>
+					{/each}
+					<div class="py-4">
+						<button class="btn" disabled={!isFormValid} type="submit">Start game!</button>
+					</div>
+				{/if}
+			</form>
+		</div>
+	</Modal>
+{:else}
 	<h2>Players</h2>
 	<ul>
 		{#each players as player}
