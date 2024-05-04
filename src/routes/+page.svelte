@@ -74,7 +74,7 @@
 	}
 </script>
 
-<button on:click={openModal}>Let's go</button>
+<button class="btn btn-primary" on:click={openModal}>Let's go</button>
 
 <Modal bind:showModal on:close={handleModalClose}>
 	<h2 slot="header">Choose player</h2>
