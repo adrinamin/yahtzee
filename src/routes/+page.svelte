@@ -3,7 +3,7 @@
 	import Modal from '$lib/components/modal.svelte';
 	import Dice from '$lib/components/dice.svelte';
 	import Scorecard from '$lib/components/scorecard.svelte';
-	import Alert from '$lib/components/alert.svelte';
+	// import Alert from '$lib/components/alert.svelte';
 	import type { Player } from './+page';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
@@ -82,7 +82,7 @@
 </script>
 
 {#if !arePlayersVisible}
-	<div class="hero min-h-screen">
+	<div class="hero">
 		<div class="hero-content text-center">
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">Hello there</h1>
@@ -127,7 +127,7 @@
 		</div>
 	</Modal>
 {:else}
-	<h2 class="text-xl font-bold">Players</h2>
+	<h2 class="text-xl font-bold text-center">Players</h2>
 	<div class="flex flex-wrap justify-evenly py-2">
 		{#each players as player}
 			<div class="card bg-primary text-primary-content shadow-xl py-2 px-6">
