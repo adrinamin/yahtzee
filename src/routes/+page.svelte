@@ -79,8 +79,8 @@
 			<div class="max-w-md">
 				<h1 class="text-5xl font-bold">Hello there</h1>
 				<p class="py-6">
-					This is a simple dice game (yahtzee). You can play with up to 6 players. Each player will have a
-					scorecard to keep track of their scores.
+					This is a simple dice game (yahtzee). You can play with up to 6 players. Each player will
+					have a scorecard to keep track of their scores.
 				</p>
 				<button class="btn btn-primary rounded-full" on:click={openModal}>New game!</button>
 			</div>
@@ -119,20 +119,26 @@
 		</div>
 	</Modal>
 {:else}
-	<h2>Players</h2>
-	<ul>
+	<h2 class="text-xl font-bold">Players</h2>
+	<div class="flex flex-wrap justify-evenly py-2">
 		{#each players as player}
-			<li>{player.name}: {player.score} {player.score > 0 ? 'points' : ''}</li>
+			<div class="card bg-primary text-primary-content shadow-xl py-2 px-6">
+				<p>{player.name}</p>
+				<p>{player.score} {player.score > 0 ? 'points' : ''}</p>
+			</div>
 		{/each}
-	</ul>
-	<h2>Current player</h2>
-	<h3>{currentPlayer.name}</h3>
+	</div>
+	<div class="mt-2 text-center">
+		<h2 class="text-xl font-bold">Current player</h2>
+		<h3 class="text-md font-bold">{currentPlayer.name}</h3>
+	</div>
 
-	<div class="divider"></div> <!-- This is a custom divider component -->
+	<div class="divider"></div>
+	<!-- This is a daisyUI custom divider component -->
 
 	<Dice on:nextPlayer={nextPlayer} />
 
-	<div class="divider"></div> 
+	<div class="divider"></div>
 
 	<div class="scorecard">
 		{#each players as player}
