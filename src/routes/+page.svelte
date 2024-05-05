@@ -3,6 +3,7 @@
 	import Modal from '$lib/components/modal.svelte';
 	import Dice from '$lib/components/dice.svelte';
 	import Scorecard from '$lib/components/scorecard.svelte';
+	import Alert from '$lib/components/alert.svelte';
 	import type { Player } from './+page';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
@@ -14,12 +15,14 @@
 	let playerNames: string[] = [];
 	let arePlayersVisible: boolean;
 	let isFormValid = false;
+	let isNextPlayerModalVisible: boolean;
 
 	onMount(() => {
 		console.log('The page has loaded');
 		resetModalValues();
 		showModal = false;
 		arePlayersVisible = false;
+		isNextPlayerModalVisible = false;
 	});
 
 	function handleSubmit(): void {
@@ -50,7 +53,12 @@
 	function nextPlayer(event: CustomEvent): void {
 		const currentPlayerIndex = players.indexOf(currentPlayer);
 		currentPlayer = players[currentPlayerIndex + 1] || players[0];
-		alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
+		// alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
+		isNextPlayerModalVisible = true;
+	}
+
+	function handleCloseNextPlayerModal(): void {
+		isNextPlayerModalVisible = false;
 	}
 
 	function handleFinalScore(event: CustomEvent): void {
@@ -133,26 +141,37 @@
 		<h3 class="text-md font-bold">{currentPlayer.name}</h3>
 	</div>
 
-	<div class="divider"></div>
 	<!-- This is a daisyUI custom divider component -->
+	<div class="divider"></div>
 
 	<Dice on:nextPlayer={nextPlayer} />
+	<Modal showModal={isNextPlayerModalVisible} on:close={handleCloseNextPlayerModal}>
+		<h3 class="font-bold" slot="header">Next Player!</h3>
+		<p>It's {currentPlayer.name} turn.</p>
+	</Modal>
+	<!-- {#if isNextPlayerAlertVisible}
+		<Alert on:close={closeNextPlayerAlert}>
+			<svg slot="svg-content" viewBox="0 0 24 24">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+				></path>
+			</svg>
+			<h3 slot="header">Next Player</h3>
+			<p>It's {currentPlayer.name} turn.</p>
+		</Alert>
+	{/if} -->
 
 	<div class="divider"></div>
-
-	<div class="scorecard">
+	<div>
 		{#each players as player}
-			<div>
-				<Scorecard bind:player={player.name} on:finalScore={handleFinalScore} />
-			</div>
+			{#if player === currentPlayer}
+				<div>
+					<Scorecard bind:player={player.name} on:finalScore={handleFinalScore} />
+				</div>
+			{/if}
 		{/each}
 	</div>
 {/if}
-
-<style>
-	.scorecard {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: space-around;
-	}
-</style>
