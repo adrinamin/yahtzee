@@ -51,9 +51,13 @@
 
 </script>
 
-<h1>{player}</h1>
+<!-- <h1>{player}</h1> -->
 
-<label>
+<div class="flex flex-wrap">
+    <button class="btn btn-primary">score of ones: {properties.ones}</button>
+</div>
+
+<!-- <label>
     score of ones:
     <input type="text" bind:value={properties.ones} />
 </label>
@@ -117,5 +121,7 @@
     chance:
     <input type="text" bind:value={properties.chance}/>
 </label>
-<br />
-<button disabled={!arePropsValid} on:click={calculateFinalScore}>Calculate final score</button>
+<br /> -->
+<div class="py-2 text-center">
+    <button class="btn btn-primary" disabled={!arePropsValid} on:click={calculateFinalScore}>Calculate final score</button>
+</div>

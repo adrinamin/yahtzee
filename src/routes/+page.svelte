@@ -138,7 +138,7 @@
 	</div>
 	<div class="mt-2 text-center">
 		<h2 class="text-xl font-bold">Current player</h2>
-		<h3 class="text-md font-bold">{currentPlayer.name}</h3>
+		<h3 class="text-3xl font-bold">{currentPlayer.name}</h3>
 	</div>
 
 	<!-- This is a daisyUI custom divider component -->
@@ -147,7 +147,7 @@
 	<Dice on:nextPlayer={nextPlayer} />
 	<Modal showModal={isNextPlayerModalVisible} on:close={handleCloseNextPlayerModal}>
 		<h3 class="font-bold" slot="header">Next Player!</h3>
-		<p>It's {currentPlayer.name} turn.</p>
+		<p>It's {currentPlayer.name}'s turn.</p>
 	</Modal>
 	<!-- {#if isNextPlayerAlertVisible}
 		<Alert on:close={closeNextPlayerAlert}>
