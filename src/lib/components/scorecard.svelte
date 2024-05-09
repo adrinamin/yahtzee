@@ -2,31 +2,35 @@
 	import { stringify } from 'postcss';
 	import { createEventDispatcher } from 'svelte';
 	import { parse } from 'svelte/compiler';
+	import Modal from './modal.svelte';
 
 	const dispatch = createEventDispatcher();
 
-    interface CardFieldText {
-        text: string;
-        score: string;
-    }
+	interface CardFieldText {
+		id: number;
+		text: string;
+		score: string;
+	}
 
 	export let player: string = '';
 	let arePropsValid: boolean = false;
+	let isScoreModalVisible: boolean = false;
+	let activeModal: number = 0;
 
 	let properties: { [key: string]: CardFieldText } = {
-		ones: { text: "score of ones", score: "" },
-		twos: { text: "score of twos", score: "" },
-		threes: { text: "score of threes", score: "" },
-		fours: { text: "score of fours", score: "" },
-		fives: { text: "score of fives", score: "" },
-		sixs: { text: "score of sixs", score: "" },
-		threeOfAKind: { text: "three of a kind", score: "" },
-		fourOfAKind: { text: "four of a kind", score: "" },
-		fullHouse: { text: "full house", score: "" },
-		smallStraight: { text: "small straight", score: "" },
-		largeStraight: { text: "large straight", score: "" },
-		yahtzee: { text: "yahtzee", score: "" },
-		chance: { text: "chance", score: "" }
+		ones: { id: 1, text: 'score of ones', score: '' },
+		twos: { id: 2, text: 'score of twos', score: '' },
+		threes: { id: 3, text: 'score of threes', score: '' },
+		fours: { id: 4, text: 'score of fours', score: '' },
+		fives: { id: 5, text: 'score of fives', score: '' },
+		sixs: { id: 6, text: 'score of sixs', score: '' },
+		threeOfAKind: { id: 7, text: 'three of a kind', score: '' },
+		fourOfAKind: { id: 8, text: 'four of a kind', score: '' },
+		fullHouse: { id: 9, text: 'full house', score: '' },
+		smallStraight: { id: 10, text: 'small straight', score: '' },
+		largeStraight: { id: 11, text: 'large straight', score: '' },
+		yahtzee: { id: 12, text: 'yahtzee', score: '' },
+		chance: { id: 13, text: 'chance', score: '' }
 	};
 
 	function calculateFinalScore() {
@@ -35,7 +39,7 @@
 		if (
 			Object.values(properties)
 				.slice(0, 6)
-				.reduce((acc, value) => acc + parseInt(value.score), 0) >= 63
+				.reduce((acc, value) => acc + parseInt(value.score === "-" ? "0" : value.score), 0) >= 63
 		) {
 			finalScore += 35;
 		}
@@ -43,6 +47,7 @@
 		for (const property in properties) {
 			if (
 				properties[property].score !== '' &&
+				properties[property].score !== '-' &&
 				properties[property].score !== '0' &&
 				properties[property] !== undefined &&
 				properties[property] !== null
@@ -55,6 +60,15 @@
 		dispatch('finalScore', { finalScore: finalScore, player: player });
 	}
 
+	function openModal(id: number) {
+		activeModal = id; // Set the active modal id when a button is clicked
+		isScoreModalVisible = true;
+	}
+
+	function handleModalClose() {
+		isScoreModalVisible = false;
+	}
+
 	$: {
 		arePropsValid = Object.values(properties).every((value) => value.score !== '');
 	}
@@ -62,15 +76,38 @@
 
 <!-- <h1>{player}</h1> -->
 
-<div class="flex flex-wrap">
-	{#each Object.values(properties) as property}
-		<button class="btn btn-primary">
-            {#if property.score === ""}
-                {property.text}
-            {:else}
-                {property.score}
-            {/if}
-        </button>
+<div class="grid grid-cols-2 gap-4">
+	{#each Object.values(properties) as property, index (property.id)}
+		<button
+			class="btn {property.score === '' ? 'btn-primary' : 'btn-accent'}"
+			on:click={() => openModal(property.id)}
+		>
+			{#if property.score === ''}
+				{property.text}
+			{:else}
+				{property.text}: {property.score} points
+			{/if}
+		</button>
+		<Modal
+			showModal={isScoreModalVisible && activeModal === property.id}
+			on:close={handleModalClose}
+		>
+			<h3 class="font-bold" slot="header">{property.text}</h3>
+			<p>Type in the score</p>
+			<div class="py-1">
+				<input
+					bind:value={property.score}
+					type="text"
+					placeholder="Score"
+					class="input input-bordered w-full max-w-md"
+				/>
+			</div>
+			<div class="py-2">
+				<button class="btn btn-primary btn-sm rounded-full" on:click={handleModalClose}
+					>Set score!</button
+				>
+			</div>
+		</Modal>
 	{/each}
 </div>
 
