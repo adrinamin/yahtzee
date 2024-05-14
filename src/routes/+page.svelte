@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import Modal from '$lib/components/modal.svelte';
 	import Dice from '$lib/components/dice.svelte';
-	import Scorecard from '$lib/components/scorecard.svelte';
+	import Scorecard from '$lib/components/scorecard/scorecard.svelte';
 	// import Alert from '$lib/components/alert.svelte';
 	import type { Player } from './+page';
 

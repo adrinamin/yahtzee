@@ -2,15 +2,10 @@
 	import { stringify } from 'postcss';
 	import { createEventDispatcher } from 'svelte';
 	import { parse } from 'svelte/compiler';
-	import Modal from './modal.svelte';
+	import Modal from '../modal.svelte';
+	import type {CardFieldText} from './models';
 
 	const dispatch = createEventDispatcher();
-
-	interface CardFieldText {
-		id: number;
-		text: string;
-		score: string;
-	}
 
 	export let player: string = '';
 	let arePropsValid: boolean = false;
