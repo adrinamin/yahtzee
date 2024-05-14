@@ -7,7 +7,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let player: string = '';
+	export let playerName: string = '';
 	let arePropsValid: boolean = false;
 	let isScoreModalVisible: boolean = false;
 	let activeModal: number = 0;
@@ -52,7 +52,7 @@
 		}
 
 		console.log('final score: ', finalScore);
-		dispatch('finalScore', { finalScore: finalScore, player: player });
+		dispatch('finalScore', { finalScore: finalScore, player: playerName });
 	}
 
 	function openModal(id: number) {

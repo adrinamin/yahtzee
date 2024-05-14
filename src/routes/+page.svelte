@@ -169,7 +169,7 @@
 		{#each players as player}
 			{#if player === currentPlayer}
 				<div>
-					<Scorecard bind:player={player.name} on:finalScore={handleFinalScore} />
+					<Scorecard bind:playerName={player.name} on:finalScore={handleFinalScore} />
 				</div>
 			{/if}
 		{/each}
