@@ -4,7 +4,7 @@
 	import Dice from '$lib/components/dice.svelte';
 	import Scorecard from '$lib/components/scorecard/scorecard.svelte';
 	// import Alert from '$lib/components/alert.svelte';
-	import type { Player } from './+page';
+	import type { Player } from '$lib/types/player';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
 
