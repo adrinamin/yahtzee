@@ -1,58 +1,92 @@
 <script lang="ts">
 	import { stringify } from 'postcss';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { parse } from 'svelte/compiler';
 	import Modal from '../modal.svelte';
 	import type {CardFieldText} from './models';
-
+	import type { Player } from '$lib/types/player';
+	
 	const dispatch = createEventDispatcher();
+	
+	export let player: Player; 
 
-	export let playerName: string = '';
 	let arePropsValid: boolean = false;
 	let isScoreModalVisible: boolean = false;
 	let activeModal: number = 0;
 
-	let properties: { [key: string]: CardFieldText } = {
-		ones: { id: 1, text: 'score of ones', score: '' },
-		twos: { id: 2, text: 'score of twos', score: '' },
-		threes: { id: 3, text: 'score of threes', score: '' },
-		fours: { id: 4, text: 'score of fours', score: '' },
-		fives: { id: 5, text: 'score of fives', score: '' },
-		sixs: { id: 6, text: 'score of sixs', score: '' },
-		threeOfAKind: { id: 7, text: 'three of a kind', score: '' },
-		fourOfAKind: { id: 8, text: 'four of a kind', score: '' },
-		fullHouse: { id: 9, text: 'full house', score: '' },
-		smallStraight: { id: 10, text: 'small straight', score: '' },
-		largeStraight: { id: 11, text: 'large straight', score: '' },
-		yahtzee: { id: 12, text: 'yahtzee', score: '' },
-		chance: { id: 13, text: 'chance', score: '' }
+	const cardtexts: CardFieldText = {
+		0: 'Ones',
+		1: 'Twos',
+		2: 'Threes',
+		3: 'Fours',
+		4: 'Fives',
+		5: 'Sixes',
+		6: 'Three of a kind',
+		7: 'Four of a kind',
+		8: 'Full house',
+		9: 'Small straight',
+		10: 'Large straight',
+		11: 'Yahtzee',
+		12: 'Chance'
 	};
+
+	onMount(() => {
+		console.log('onmount Player: ', player);
+	});
+	
+	// function handleScoreboardChange(event: Event) {
+	// 	// console.log('scoreboard item input data: ', (event as InputEvent).data);
+	// 	// console.log('scoreboard item id: ', (event.target as HTMLInputElement).name);
+
+	// 	const scoreboardItemId = (event.target as HTMLInputElement).name;
+	// 	const scoreboardItemValue = (event.target as HTMLInputElement).value;
+
+	// 	// player = {
+	// 	// 	...player,
+	// 	// 	scoreboard: {
+	// 	// 		...player.scoreboard,
+	// 	// 		scores: player.scoreboard.scores.map((score) => {
+	// 	// 			if (score.id === parseInt(scoreboardItemId)) {
+	// 	// 				score.value = scoreboardItemValue;
+	// 	// 			}
+	// 	// 			return score;
+	// 	// 		})
+	// 	// 	}
+	// 	// };
+
+	// 	// player.scoreboard.scores.find((score) => {
+	// 	// 	if (score.id === parseInt(scoreboardItemId)) {
+	// 	// 		score.value = scoreboardItemValue;
+	// 	// 		console.log('scoreboard item value: ', score.value);
+	// 	// 	}
+	// 	// });
+	// }
 
 	function calculateFinalScore() {
 		let finalScore = 0;
 
-		if (
-			Object.values(properties)
-				.slice(0, 6)
-				.reduce((acc, value) => acc + parseInt(value.score === "-" ? "0" : value.score), 0) >= 63
-		) {
-			finalScore += 35;
-		}
+		// if (
+		// 	Object.values(scoreboardDto)
+		// 		.slice(0, 6)
+		// 		.reduce((acc, value) => acc + parseInt(value.score === "-" ? "0" : value.score), 0) >= 63
+		// ) {
+		// 	finalScore += 35;
+		// }
 
-		for (const property in properties) {
-			if (
-				properties[property].score !== '' &&
-				properties[property].score !== '-' &&
-				properties[property].score !== '0' &&
-				properties[property] !== undefined &&
-				properties[property] !== null
-			) {
-				finalScore += parseInt(properties[property].score);
-			}
-		}
+		// for (const scoreboardItem in scoreboardDto) {
+		// 	if (
+		// 		scoreboardDto[scoreboardItem].score !== '' &&
+		// 		scoreboardDto[scoreboardItem].score !== '-' &&
+		// 		scoreboardDto[scoreboardItem].score !== '0' &&
+		// 		scoreboardDto[scoreboardItem] !== undefined &&
+		// 		scoreboardDto[scoreboardItem] !== null
+		// 	) {
+		// 		finalScore += parseInt(scoreboardDto[scoreboardItem].score);
+		// 	}
+		// }
 
 		console.log('final score: ', finalScore);
-		dispatch('finalScore', { finalScore: finalScore, player: playerName });
+		dispatch('finalScore', { finalScore: finalScore, player: player });
 	}
 
 	function openModal(id: number) {
@@ -62,36 +96,38 @@
 
 	function handleModalClose() {
 		isScoreModalVisible = false;
+		dispatch('scoreboardChange', { player: player });
 	}
 
 	$: {
-		arePropsValid = Object.values(properties).every((value) => value.score !== '');
+		arePropsValid = false;
 	}
 </script>
 
 <!-- <h1>{player}</h1> -->
 
 <div class="grid grid-cols-2 gap-4">
-	{#each Object.values(properties) as property, index (property.id)}
+	{#each Object.entries(cardtexts) as [key, value], i}
 		<button
-			class="btn {property.score === '' ? 'btn-primary' : 'btn-accent'}"
-			on:click={() => openModal(property.id)}
+			class="btn {player.scoreboard.scores[i].value === '' ? 'btn-primary' : 'btn-accent'}"
+			on:click={() => openModal(i)}
 		>
-			{#if property.score === ''}
-				{property.text}
+			{#if player.scoreboard.scores[i].value === ''}
+				{value}
 			{:else}
-				{property.text}: {property.score} points
+				{value}: {player.scoreboard.scores[i].value} points
 			{/if}
 		</button>
 		<Modal
-			showModal={isScoreModalVisible && activeModal === property.id}
+			showModal={isScoreModalVisible && activeModal === i}
 			on:close={handleModalClose}
 		>
-			<h3 class="font-bold" slot="header">{property.text}</h3>
+			<h3 class="font-bold" slot="header">{value}</h3>
 			<p>Type in the score</p>
 			<div class="py-1">
 				<input
-					bind:value={property.score}
+					name="{i.toString()}"
+					bind:value={player.scoreboard.scores[i].value}
 					type="text"
 					placeholder="Score"
 					class="input input-bordered w-full max-w-md"

@@ -1,4 +1,7 @@
+import type { Scoreboard } from "./scoreboard";
+
 export interface Player {
     name: string;
-    score: number;
+    finalScore: number;
+    scoreboard: Scoreboard;
 }

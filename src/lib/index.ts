@@ -4,3 +4,4 @@ export { default as Modal } from './components/modal.svelte';
 export { default as ScoreCard } from './components/scorecard/scorecard.svelte';
 export { default as Alert } from './components/alert.svelte';
 export type { Player } from './types/player';
+export type { Scoreboard } from './types/scoreboard';

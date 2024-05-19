@@ -5,8 +5,27 @@
 	import Scorecard from '$lib/components/scorecard/scorecard.svelte';
 	// import Alert from '$lib/components/alert.svelte';
 	import type { Player } from '$lib/types/player';
+	import type { Scoreboard } from '$lib/types/scoreboard';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
+
+	const initialScoreboard: Scoreboard = {
+		scores: [
+			{ id: 0, value: '' },
+			{ id: 1, value: '' },
+			{ id: 2, value: '' },
+			{ id: 3, value: '' },
+			{ id: 4, value: '' },
+			{ id: 5, value: '' },
+			{ id: 6, value: '' },
+			{ id: 7, value: '' },
+			{ id: 8, value: '' },
+			{ id: 9, value: '' },
+			{ id: 10, value: '' },
+			{ id: 11, value: '' },
+			{ id: 12, value: '' }
+		]
+	};
 
 	let showModal: boolean;
 	let selectedPlayers: number;
@@ -28,7 +47,8 @@
 	function handleSubmit(): void {
 		players = Array.from({ length: selectedPlayers }, (_, i) => ({
 			name: playerNames[i],
-			score: 0
+			finalScore: 0,
+			scoreboard: JSON.parse(JSON.stringify(initialScoreboard)) as Scoreboard  // deep copy to avoid referencing the same object
 		}));
 		console.log('Players created: ', players);
 		showModal = false;
@@ -53,6 +73,7 @@
 	function nextPlayer(event: CustomEvent): void {
 		const currentPlayerIndex = players.indexOf(currentPlayer);
 		currentPlayer = players[currentPlayerIndex + 1] || players[0];
+		console.log('Current player: ', currentPlayer);
 		// alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
 		isNextPlayerModalVisible = true;
 	}
@@ -61,10 +82,31 @@
 		isNextPlayerModalVisible = false;
 	}
 
+	function handleUpdatePlayerScore(event: CustomEvent): void {
+		const player = event.detail.player;
+		console.log('Player: ', player);
+		const playerIndex = players.findIndex((p) => p.name === player.name);
+		if ( playerIndex === -1) {
+			return;
+		}
+
+		players = [
+			...players.slice(0, playerIndex),
+			player,
+			...players.slice(playerIndex + 1)
+		];
+
+		console.log('Players: ', players);
+
+
+		// players[playerIndex] = player;
+		// players = [...players, players.splice(playerIndex, 1)[0]];
+	}
+
 	function handleFinalScore(event: CustomEvent): void {
 		const playerIndex = players.findIndex((player) => player.name === event.detail.player);
 		const finalScore = event.detail.finalScore as number;
-		players[playerIndex].score = finalScore;
+		players[playerIndex].finalScore = finalScore;
 		alert(`${event.detail.player} scored ${finalScore} points!`);
 	}
 
@@ -132,7 +174,7 @@
 		{#each players as player}
 			<div class="card bg-primary text-primary-content shadow-xl py-2 px-6">
 				<p>{player.name}</p>
-				<p>{player.score} {player.score > 0 ? 'points' : ''}</p>
+				<p>{player.finalScore} {player.finalScore > 0 ? 'points' : ''}</p>
 			</div>
 		{/each}
 	</div>
@@ -169,7 +211,11 @@
 		{#each players as player}
 			{#if player === currentPlayer}
 				<div>
-					<Scorecard bind:playerName={player.name} on:finalScore={handleFinalScore} />
+					<Scorecard 
+						bind:player={currentPlayer} 
+						on:scoreboardChange={handleUpdatePlayerScore} 
+						on:finalScore={handleFinalScore} 
+					/>
 				</div>
 			{/if}
 		{/each}
