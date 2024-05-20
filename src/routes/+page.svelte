@@ -3,9 +3,9 @@
 	import Modal from '$lib/components/modal.svelte';
 	import Dice from '$lib/components/dice.svelte';
 	import Scorecard from '$lib/components/scorecard/scorecard.svelte';
-	// import Alert from '$lib/components/alert.svelte';
 	import type { Player } from '$lib/types/player';
 	import type { Scoreboard } from '$lib/types/scoreboard';
+	import { calculateScore, isFirstHalfOver63 } from '$lib/common/helper';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
 
@@ -35,6 +35,7 @@
 	let arePlayersVisible: boolean;
 	let isFormValid = false;
 	let isNextPlayerModalVisible: boolean;
+	let isReadyForDecidingWinner: boolean = false;
 
 	onMount(() => {
 		console.log('The page has loaded');
@@ -74,7 +75,6 @@
 		const currentPlayerIndex = players.indexOf(currentPlayer);
 		currentPlayer = players[currentPlayerIndex + 1] || players[0];
 		console.log('Current player: ', currentPlayer);
-		// alert(`You scored ${event.detail.finalScore} points! It's ${currentPlayer.name}'s turn`);
 		isNextPlayerModalVisible = true;
 	}
 
@@ -83,31 +83,35 @@
 	}
 
 	function handleUpdatePlayerScore(event: CustomEvent): void {
-		const player = event.detail.player;
-		console.log('Player: ', player);
-		const playerIndex = players.findIndex((p) => p.name === player.name);
-		if ( playerIndex === -1) {
-			return;
-		}
+		const playerIndex = players.findIndex((player) => player.name === event.detail.player.name);
 
 		players = [
 			...players.slice(0, playerIndex),
-			player,
+			event.detail.player,
 			...players.slice(playerIndex + 1)
 		];
-
-		console.log('Players: ', players);
-
-
-		// players[playerIndex] = player;
-		// players = [...players, players.splice(playerIndex, 1)[0]];
 	}
 
-	function handleFinalScore(event: CustomEvent): void {
-		const playerIndex = players.findIndex((player) => player.name === event.detail.player);
-		const finalScore = event.detail.finalScore as number;
-		players[playerIndex].finalScore = finalScore;
-		alert(`${event.detail.player} scored ${finalScore} points!`);
+	function decideWinner() {
+		let finalScore = 0;
+
+		players.forEach((player) => {
+			finalScore = calculateScore(player.scoreboard);
+
+			if (isFirstHalfOver63(player.scoreboard)) {
+				finalScore += 35;
+			}
+		});
+
+		// find out which player has the highest score
+		const winner = players.reduce((acc, player) => {
+			if (player.finalScore > acc.finalScore) {
+				acc = player;
+			}
+			return acc;
+		}, players[0]);
+
+		console.log('Winner: ', winner);
 	}
 
 	$: {
@@ -118,8 +122,10 @@
 			playerNames.pop();
 		}
 		isFormValid = playerNames.every((name) => name.trim() !== '');
-		// console.log(isFormValid);
-		// console.log(playerNames);
+	}
+
+	$: {
+		isReadyForDecidingWinner = players && players.every(p => p.scoreboard.scores.every(s => s.value !== ''));
 	}
 </script>
 
@@ -149,7 +155,6 @@
 					</select>
 				</div>
 				{#if selectedPlayers > 0}
-					<!-- <p>You have selected {selectedPlayers} players</p> -->
 					{#each Array(selectedPlayers) as _, i}
 						<div class="py-1">
 							<label for="player{i}">Player {i + 1}</label>
@@ -191,20 +196,6 @@
 		<h3 class="font-bold" slot="header">Next Player!</h3>
 		<p>It's {currentPlayer.name}'s turn.</p>
 	</Modal>
-	<!-- {#if isNextPlayerAlertVisible}
-		<Alert on:close={closeNextPlayerAlert}>
-			<svg slot="svg-content" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				></path>
-			</svg>
-			<h3 slot="header">Next Player</h3>
-			<p>It's {currentPlayer.name} turn.</p>
-		</Alert>
-	{/if} -->
 
 	<div class="divider"></div>
 	<div>
@@ -214,10 +205,14 @@
 					<Scorecard 
 						bind:player={currentPlayer} 
 						on:scoreboardChange={handleUpdatePlayerScore} 
-						on:finalScore={handleFinalScore} 
 					/>
 				</div>
 			{/if}
 		{/each}
+	</div>
+	<div class="py-2 text-center">
+		<button class="btn btn-primary" disabled={!isReadyForDecidingWinner} on:click={decideWinner}
+			>Who is the winner?</button
+		>
 	</div>
 {/if}
