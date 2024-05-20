@@ -31,11 +31,13 @@
 	let selectedPlayers: number;
 	let players: Player[];
 	let currentPlayer: Player;
+	let winner: Player;
 	let playerNames: string[] = [];
 	let arePlayersVisible: boolean;
 	let isFormValid = false;
 	let isNextPlayerModalVisible: boolean;
 	let isReadyForDecidingWinner: boolean = false;
+	let isWinnerModulVisible: boolean;
 
 	onMount(() => {
 		console.log('The page has loaded');
@@ -43,6 +45,7 @@
 		showModal = false;
 		arePlayersVisible = false;
 		isNextPlayerModalVisible = false;
+		isWinnerModulVisible = false;
 	});
 
 	function handleSubmit(): void {
@@ -104,14 +107,14 @@
 		});
 
 		// find out which player has the highest score
-		const winner = players.reduce((acc, player) => {
+		winner = players.reduce((acc, player) => {
 			if (player.finalScore > acc.finalScore) {
 				acc = player;
 			}
 			return acc;
 		}, players[0]);
 
-		console.log('Winner: ', winner);
+		isWinnerModulVisible = true;
 	}
 
 	$: {
@@ -215,4 +218,9 @@
 			>Who is the winner?</button
 		>
 	</div>
+
+	<Modal showModal={isWinnerModulVisible} on:close={() => isWinnerModulVisible = false}>
+		<h3 class="font-bold" slot="header">Winner!</h3>
+		<p>The winner is {winner && winner.name}!</p>
+	</Modal>
 {/if}
