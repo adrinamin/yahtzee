@@ -6,6 +6,7 @@
 	import type { Player } from '$lib/types/player';
 	import type { Scoreboard } from '$lib/types/scoreboard';
 	import { calculateScore, isFirstHalfOver63 } from '$lib/common/helper';
+	import { currentPlayerStore, playersStore, isGameStartedStore } from '$lib/stores/mainPageState';
 
 	const numberOfPlayers: number[] = [1, 2, 3, 4, 5, 6];
 
@@ -40,12 +41,14 @@
 	let isWinnerModulVisible: boolean;
 
 	onMount(() => {
-		console.log('The page has loaded');
 		resetModalValues();
 		showModal = false;
-		arePlayersVisible = false;
+		arePlayersVisible = $isGameStartedStore || false;
+		players = $playersStore || [];
+		currentPlayer = $currentPlayerStore || { name: '', finalScore: 0, scoreboard: initialScoreboard };
 		isNextPlayerModalVisible = false;
 		isWinnerModulVisible = false;
+		console.log('The page has loaded');
 	});
 
 	function handleSubmit(): void {
@@ -58,7 +61,10 @@
 		showModal = false;
 		resetModalValues();
 		currentPlayer = players[0];
+		playersStore.set(players);
+		currentPlayerStore.set(currentPlayer);
 		arePlayersVisible = true;
+		isGameStartedStore.set(true);
 	}
 
 	function handleModalClose(): void {
@@ -78,6 +84,7 @@
 		const currentPlayerIndex = players.indexOf(currentPlayer);
 		currentPlayer = players[currentPlayerIndex + 1] || players[0];
 		console.log('Current player: ', currentPlayer);
+		currentPlayerStore.set(currentPlayer);
 		isNextPlayerModalVisible = true;
 	}
 

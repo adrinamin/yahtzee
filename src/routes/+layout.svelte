@@ -2,6 +2,9 @@
 	import '../app.css';
     import { goto } from '$app/navigation';
     import { page } from '$app/stores';
+    import { writable } from 'svelte/store';
+
+    
 </script>
 
 <div class="container mx-auto px-4 py-4">
