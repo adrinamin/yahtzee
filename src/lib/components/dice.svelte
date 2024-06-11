@@ -1,7 +1,7 @@
 <!-- src/lib/components/Dice.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { diceStore } from '$lib/stores/diceStore';
+	import { diceStore, diceRollCountStore } from '$lib/stores/diceStore';
 
 	export let finalScore: number = 0;
 	let rollCounts: number = 0;
@@ -27,6 +27,7 @@
 		dice3 = $diceStore[2] || 0;
 		dice4 = $diceStore[3] || 0;
 		dice5 = $diceStore[4] || 0;
+		rollCounts = $diceRollCountStore;
 	});
 
 	function rollDice() {
@@ -51,11 +52,13 @@
 			$diceStore[4] = dice5;
 		}
 		rollCounts++;
+		diceRollCountStore.set(rollCounts);
 	}
 
 	function nextPlayer() {
 		finalScore = dice1 + dice2 + dice3 + dice4 + dice5;
 		rollCounts = 0;
+		diceRollCountStore.set(rollCounts);
 		dice1 = 0;
 		dice2 = 0;
 		dice3 = 0;
