@@ -1,6 +1,7 @@
 <!-- src/lib/components/Dice.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { diceStore } from '$lib/stores/diceStore';
 
 	export let finalScore: number = 0;
 	let rollCounts: number = 0;
@@ -19,21 +20,35 @@
 
 	const dispatch = createEventDispatcher();
 
+	onMount(() => {
+		console.log('Dice component has loaded')
+		dice1 = $diceStore[0] || 0;
+		dice2 = $diceStore[1] || 0;
+		dice3 = $diceStore[2] || 0;
+		dice4 = $diceStore[3] || 0;
+		dice5 = $diceStore[4] || 0;
+	});
+
 	function rollDice() {
 		if (!dice1Locked) {
 			dice1 = Math.floor(Math.random() * 6) + 1;
+			$diceStore[0] = dice1;
 		}
 		if (!dice2Locked) {
 			dice2 = Math.floor(Math.random() * 6) + 1;
+			$diceStore[1] = dice2;
 		}
 		if (!dice3Locked) {
 			dice3 = Math.floor(Math.random() * 6) + 1;
+			$diceStore[2] = dice3;
 		}
 		if (!dice4Locked) {
 			dice4 = Math.floor(Math.random() * 6) + 1;
+			$diceStore[3] = dice4;
 		}
 		if (!dice5Locked) {
 			dice5 = Math.floor(Math.random() * 6) + 1;
+			$diceStore[4] = dice5;
 		}
 		rollCounts++;
 	}
