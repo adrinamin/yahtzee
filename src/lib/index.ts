@@ -5,4 +5,5 @@ export { default as ScoreCard } from './components/scorecard/scorecard.svelte';
 export { default as Alert } from './components/alert.svelte';
 export type { Player } from './types/player';
 export type { Scoreboard } from './types/scoreboard';
-export { currentPlayerStore, playersStore } from './stores/mainPageState';
+export { currentPlayerStore, playersStore, isGameStartedStore } from './stores/mainPageState';
+export { diceRollStore, diceStore } from './stores/diceStore';
