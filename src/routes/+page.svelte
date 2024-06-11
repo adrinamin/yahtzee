@@ -48,7 +48,7 @@
 		currentPlayer = $currentPlayerStore || { name: '', finalScore: 0, scoreboard: initialScoreboard };
 		isNextPlayerModalVisible = false;
 		isWinnerModulVisible = false;
-		console.log('The page has loaded');
+		console.log('The main page has loaded');
 	});
 
 	function handleSubmit(): void {
