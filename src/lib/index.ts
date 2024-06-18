@@ -6,4 +6,4 @@ export { default as Alert } from './components/alert.svelte';
 export type { Player } from './types/player';
 export type { Scoreboard } from './types/scoreboard';
 export { currentPlayerStore, playersStore, isGameStartedStore } from './stores/mainPageState';
-export { diceRollStore, diceStore } from './stores/diceStore';
+export { diceLockedStore as diceRollStore, diceStore } from './stores/diceStore';

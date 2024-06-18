@@ -1,7 +1,7 @@
 <!-- src/lib/components/Dice.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { diceStore, diceRollCountStore } from '$lib/stores/diceStore';
+	import { diceStore, diceRollCountStore, diceLockedStore } from '$lib/stores/diceStore';
 
 	export let finalScore: number = 0;
 	let rollCounts: number = 0;
@@ -28,6 +28,12 @@
 		dice4 = $diceStore[3] || 0;
 		dice5 = $diceStore[4] || 0;
 		rollCounts = $diceRollCountStore;
+
+		dice1Locked = $diceLockedStore[0] || false;
+		dice2Locked = $diceLockedStore[1] || false;
+		dice3Locked = $diceLockedStore[2] || false;
+		dice4Locked = $diceLockedStore[3] || false;
+		dice5Locked = $diceLockedStore[4] || false;
 	});
 
 	function rollDice() {
@@ -64,12 +70,32 @@
 		dice3 = 0;
 		dice4 = 0;
 		dice5 = 0;
+		diceStore.set([dice1, dice2, dice3, dice4, dice5]);
 		dice1Locked = false;
 		dice2Locked = false;
 		dice3Locked = false;
 		dice4Locked = false;
 		dice5Locked = false;
+		diceLockedStore.set([dice1Locked, dice2Locked, dice3Locked, dice4Locked, dice5Locked]);
 		dispatch('nextPlayer', { finalScore: finalScore });
+	}
+
+	$: {
+		if (dice1Locked) {
+			$diceLockedStore[0] = dice1Locked;
+		}
+		if (dice2Locked) {
+			$diceLockedStore[1] = dice2Locked;
+		}
+		if (dice3Locked) {
+			$diceLockedStore[2] = dice3Locked;
+		}
+		if (dice4Locked) {
+			$diceLockedStore[3] = dice4Locked;
+		}
+		if (dice5Locked) {
+			$diceLockedStore[4] = dice5Locked;
+		}
 	}
 </script>
 
