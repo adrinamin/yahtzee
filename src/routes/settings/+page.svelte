@@ -1,7 +1,7 @@
 <script>
 	// import { goto } from '$app/navigation';
-	import { onMount } from "svelte";
-	import { themeChange } from "theme-change";
+	import { onMount } from 'svelte';
+	import { themeChange } from 'theme-change';
 
 	const pageName = 'Settings';
 	const themes = ['aqua', 'dark', 'light', 'synthwave', 'retro'];
