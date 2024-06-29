@@ -24,3 +24,12 @@ npm run dev -- --open
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## When using neovim
+
+When using neovim for development, you need to install the svelte and tailwindcss lsp with your neovim lsp manager.
+You should also have the svelte-language-server installed on your machine.
+More infos here:
+
+- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#svelte
+- https://github.com/sveltejs/language-tools/tree/master/packages/typescript-plugin#usage
