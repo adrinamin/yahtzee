@@ -4,6 +4,7 @@
 	import { themeChange } from "theme-change";
 
 	const pageName = 'Settings';
+	const themes = ['aqua', 'dark', 'light', 'synthwave', 'retro'];
 
 	onMount(() => {
 		themeChange(false); // false parameter is required for svelte
@@ -18,11 +19,9 @@
 				<span class="label-text">Choose theme</span>
 			</div>
 			<select class="select select-primary" data-choose-theme>
-				<option value="aqua">default</option>
-				<option value="dark">dark</option>
-				<option value="light">light</option>
-				<option value="synthwave">synthwave</option>
-				<option value="retro">retro</option>
+				{#each themes as theme}
+					<option value={theme}>{theme}</option>
+				{/each}
 			</select>
 		</label>
 	</div>
