@@ -3,6 +3,7 @@
 	import Modal from '$lib/components/modal.svelte';
 	import Dice from '$lib/components/dice.svelte';
 	import Scorecard from '$lib/components/scorecard/scorecard.svelte';
+	import Game from '$lib/components/game.svelte';
 	import type { Player } from '$lib/types/player';
 	import type { Scoreboard } from '$lib/types/scoreboard';
 	import { calculateScore, isFirstHalfOver63 } from '$lib/common/helper';
@@ -45,7 +46,11 @@
 		showModal = false;
 		arePlayersVisible = $isGameStartedStore || false;
 		players = $playersStore || [];
-		currentPlayer = $currentPlayerStore || { name: '', finalScore: 0, scoreboard: initialScoreboard };
+		currentPlayer = $currentPlayerStore || {
+			name: '',
+			finalScore: 0,
+			scoreboard: initialScoreboard
+		};
 		isNextPlayerModalVisible = false;
 		isWinnerModulVisible = false;
 		console.log('The main page has loaded');
@@ -55,7 +60,7 @@
 		players = Array.from({ length: selectedPlayers }, (_, i) => ({
 			name: playerNames[i],
 			finalScore: 0,
-			scoreboard: JSON.parse(JSON.stringify(initialScoreboard)) as Scoreboard  // deep copy to avoid referencing the same object
+			scoreboard: JSON.parse(JSON.stringify(initialScoreboard)) as Scoreboard // deep copy to avoid referencing the same object
 		}));
 		console.log('Players created: ', players);
 		showModal = false;
@@ -135,7 +140,8 @@
 	}
 
 	$: {
-		isReadyForDecidingWinner = players && players.every(p => p.scoreboard.scores.every(s => s.value !== ''));
+		isReadyForDecidingWinner =
+			players && players.every((p) => p.scoreboard.scores.every((s) => s.value !== ''));
 	}
 </script>
 
@@ -184,7 +190,7 @@
 		</div>
 	</Modal>
 {:else}
-	<h2 class="text-xl font-bold text-center">Players</h2>
+	<Game />
 	<div class="flex flex-wrap justify-evenly py-2">
 		{#each players as player}
 			<div class="card bg-primary text-primary-content shadow-xl py-2 px-6">
@@ -212,10 +218,7 @@
 		{#each players as player}
 			{#if player === currentPlayer}
 				<div>
-					<Scorecard 
-						bind:player={currentPlayer} 
-						on:scoreboardChange={handleUpdatePlayerScore} 
-					/>
+					<Scorecard bind:player={currentPlayer} on:scoreboardChange={handleUpdatePlayerScore} />
 				</div>
 			{/if}
 		{/each}
@@ -226,7 +229,7 @@
 		>
 	</div>
 
-	<Modal showModal={isWinnerModulVisible} on:close={() => isWinnerModulVisible = false}>
+	<Modal showModal={isWinnerModulVisible} on:close={() => (isWinnerModulVisible = false)}>
 		<h3 class="font-bold" slot="header">Winner!</h3>
 		<p>The winner is {winner && winner.name}!</p>
 	</Modal>
