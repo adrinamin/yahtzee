@@ -21,7 +21,7 @@
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
-		console.log('Dice component has loaded')
+		console.log('Dice component has loaded');
 		dice1 = $diceStore[0] || 0;
 		dice2 = $diceStore[1] || 0;
 		dice3 = $diceStore[2] || 0;
@@ -103,7 +103,7 @@
 	{#if rollCounts === 3}
 		<button class="btn btn-warning rounded-full btn-sm" on:click={nextPlayer}>Next player</button>
 	{:else}
-        <button class="btn btn-primary rounded-full btn-sm" on:click={rollDice}>{buttonName}</button>
+		<button class="btn btn-primary rounded-full btn-sm" on:click={rollDice}>{buttonName}</button>
 	{/if}
 </div>
 <div class="flex flex-wrap justify-evenly pt-4">

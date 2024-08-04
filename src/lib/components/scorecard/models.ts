@@ -1,3 +1,5 @@
 export interface CardFieldText {
-    [key: number]: string;
+	text: string;
+	isChecked: boolean;
+	cardFieldValue: number;
 }
